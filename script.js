@@ -9,7 +9,7 @@ const getSession = () => {
 
   console.log('Aguarde. Fazendo login...\n\n----\n');
   curlTest.setOpt(Curl.option.POST, true);
-  curlTest.setOpt(Curl.option.URL, 'http://localhost:3000/test');
+  curlTest.setOpt(Curl.option.URL, 'http://localhost:3000/login.fcgi');
   curlTest.setOpt(
     Curl.option.POSTFIELDS,
     querystring.stringify({
@@ -24,6 +24,7 @@ const getSession = () => {
       token = session;
       setTimeout(() => {
         console.log('Login feito com sucesso!\n\n----\n');
+        console.log('Debug - Data: ', data);
       }, 500);
       setTimeout(() => {
         activateMonitor();
@@ -34,7 +35,10 @@ const getSession = () => {
     this.close();
   });
 
-  curlTest.on('error', terminate);
+  curlTest.on('error', () => {
+    console.log('Não foi possivel fazer login. Tente novamente.');
+    terminate;
+  });
   curlTest.perform();
 };
 
@@ -44,7 +48,10 @@ const activateMonitor = () => {
 
   console.log('Aguarde. Direcionando a catraca ao servidor da bios\n\n----\n');
   curlTest.setOpt(Curl.option.POST, true);
-  curlTest.setOpt(Curl.option.URL, 'http://localhost:3000/monitor');
+  curlTest.setOpt(
+    Curl.option.URL,
+    `http://localhost:3000/set_configuration.fcgi?session=${token}`
+  );
   curlTest.setOpt(
     Curl.option.POSTFIELDS,
     querystring.stringify({
@@ -60,6 +67,7 @@ const activateMonitor = () => {
     if (statusCode === 200) {
       setTimeout(() => {
         console.log('Catraca direcionada com sucesso!\n\n----\n');
+        console.log('Debug - Data: ', data);
       }, 500);
       setTimeout(() => {
         changeBaseURL();
@@ -83,7 +91,10 @@ const changeBaseURL = () => {
 
   console.log('Aguarde. Configurando a rota de envio de informações\n\n----\n');
   curlTest.setOpt(Curl.option.POST, true);
-  curlTest.setOpt(Curl.option.URL, 'http://localhost:3000/changeurl');
+  curlTest.setOpt(
+    Curl.option.URL,
+    `http://localhost:3000/set_configuration.fcgi?session=${token}`
+  );
   curlTest.setOpt(
     Curl.option.POSTFIELDS,
     querystring.stringify({
@@ -97,14 +108,19 @@ const changeBaseURL = () => {
     if (statusCode === 200) {
       setTimeout(() => {
         console.log('Rota configurada com sucesso!\n\n----\n');
+        console.log('Debug - Data: ', data);
       }, 500);
       setTimeout(() => {
-        console.log('Fim de configuração!');
+        console.log(
+          'Fim de configuração! "Essa janela sera fechada em alguns segundos"'
+        );
       }, 1000);
     } else {
       console.log('Não foi possivel configurar a rota. Tente novamente.');
     }
-    this.close();
+    setTimeout(() => {
+      this.close();
+    }, 10000);
   });
 
   curlTest.on('error', terminate);

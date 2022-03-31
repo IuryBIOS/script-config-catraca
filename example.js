@@ -3,16 +3,16 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/test', (req, res) => {
+app.post('/login.fcgi', (req, res) => {
   res.status(200).json({ session: 'working' });
 });
 
-app.post('/monitor', (req, res) => {
-  res.status(200).json({ monitor: 'working' });
+app.post('/set_configuration.fcgi', (req, res) => {
+  res.status(200).json({});
 });
 
-app.post('/changeurl', (req, res) => {
-  res.status(200).json({ change: 'working' });
+app.post('/set_configuration.fcgi', (req, res) => {
+  res.status(200).json({});
 });
 
 app.listen(3000, () => {
