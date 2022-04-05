@@ -1,0 +1,24 @@
+INSTRUÇÕES PARA USO DO PROGRAMA DE CONFIGURAÇÃO AUTOMATICA DA CATRACA
+---------------------------------------------------------------------
+
+1. Clique no arquivo INICIAR e aguarde o programa abrir.
+
+-----------
+
+2. A mensagem "CONFIGURADOR AUTOMATICO CATRACA CONTROL ID - BIOS INFORMATICA" deverá aparecer,
+caso a mensagem não apareça, clique no arquivo INSTALAR e tente abrir o arquivo
+INICIAR novamente.
+
+-----------
+
+3. Após o programa abrir, as configurações necessárias serão feitas automaticamente.
+
+-----------
+
+4. Aguarde a mensagem "Catraca configurada com sucesso, o programa irá fechar em alguns instantes",
+após essa mensagem aparecer, basta aguardar o programa fechar sozinho ou fechar a janela manualmente.
+
+
+-----------
+Atenciosamente
+Bios Informática

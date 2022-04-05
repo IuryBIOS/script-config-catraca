@@ -1,130 +1,89 @@
-const querystring = require('querystring');
-const { Curl } = require('node-libcurl');
+const axios = require('axios');
 
 let token = '';
+const getSession = async () => {
+  console.log('Iniciando configurações necessarias, aguarde...\n\n');
+  console.log('----------\n\n');
 
-const getSession = () => {
-  const curlTest = new Curl();
-  const terminate = curlTest.close.bind(curlTest);
-
-  console.log('Aguarde. Fazendo login...\n\n----\n');
-  curlTest.setOpt(Curl.option.POST, true);
-  curlTest.setOpt(Curl.option.URL, 'http://localhost:3000/login.fcgi');
-  curlTest.setOpt(
-    Curl.option.POSTFIELDS,
-    querystring.stringify({
+  try {
+    const { data } = await axios.post('http://localhost:3000/login.fcgi', {
       login: 'admin',
       password: 'admin',
-    })
-  );
+    });
 
-  curlTest.on('end', function (statusCode, data, headers) {
-    const { session } = JSON.parse(data);
-    if (session) {
-      token = session;
-      setTimeout(() => {
-        console.log('Login feito com sucesso!\n\n----\n');
-        console.log('Debug - Data: ', data);
-      }, 500);
-      setTimeout(() => {
-        activateMonitor();
-      }, 1000);
-    } else {
-      console.log('Não foi possivel fazer login. Tente novamente.');
-    }
-    this.close();
-  });
-
-  curlTest.on('error', () => {
-    console.log('Não foi possivel fazer login. Tente novamente.');
-    terminate;
-  });
-  curlTest.perform();
-};
-
-const activateMonitor = () => {
-  const curlTest = new Curl();
-  const terminate = curlTest.close.bind(curlTest);
-
-  console.log('Aguarde. Direcionando a catraca ao servidor da bios\n\n----\n');
-  curlTest.setOpt(Curl.option.POST, true);
-  curlTest.setOpt(
-    Curl.option.URL,
-    `http://localhost:3000/set_configuration.fcgi?session=${token}`
-  );
-  curlTest.setOpt(
-    Curl.option.POSTFIELDS,
-    querystring.stringify({
-      monitor: {
-        request_timeout: '5000',
-        hostname: 'ws.bios.inf.br',
-        port: '8083',
-      },
-    })
-  );
-
-  curlTest.on('end', function (statusCode, data, headers) {
-    if (statusCode === 200) {
-      setTimeout(() => {
-        console.log('Catraca direcionada com sucesso!\n\n----\n');
-        console.log('Debug - Data: ', data);
-      }, 500);
-      setTimeout(() => {
-        changeBaseURL();
-      }, 1000);
-    } else {
-      console.log('Não foi possivel direcionar a catraca. Tente novamente.');
-    }
-    this.close();
-  });
-
-  curlTest.on('error', () => {
-    console.log('Não foi possivel direcionar a catraca. Tente novamente.');
-    terminate;
-  });
-  curlTest.perform();
-};
-
-const changeBaseURL = () => {
-  const curlTest = new Curl();
-  const terminate = curlTest.close.bind(curlTest);
-
-  console.log('Aguarde. Configurando a rota de envio de informações\n\n----\n');
-  curlTest.setOpt(Curl.option.POST, true);
-  curlTest.setOpt(
-    Curl.option.URL,
-    `http://localhost:3000/set_configuration.fcgi?session=${token}`
-  );
-  curlTest.setOpt(
-    Curl.option.POSTFIELDS,
-    querystring.stringify({
-      monitor: {
-        path: 'service',
-      },
-    })
-  );
-
-  curlTest.on('end', function (statusCode, data, headers) {
-    if (statusCode === 200) {
-      setTimeout(() => {
-        console.log('Rota configurada com sucesso!\n\n----\n');
-        console.log('Debug - Data: ', data);
-      }, 500);
-      setTimeout(() => {
-        console.log(
-          'Fim de configuração! "Essa janela sera fechada em alguns segundos"'
-        );
-      }, 1000);
-    } else {
-      console.log('Não foi possivel configurar a rota. Tente novamente.');
-    }
+    token = data.session;
     setTimeout(() => {
-      this.close();
-    }, 10000);
-  });
-
-  curlTest.on('error', terminate);
-  curlTest.perform();
+      console.log('Iniciando ativação do monitor de acessos...\n\n');
+      console.log('----------\n\n');
+      activateMonitor();
+    }, 1000);
+  } catch (error) {
+    setTimeout(() => {
+      console.log('Falha na configuração da catraca, tente novamente!\n\n');
+      setTimeout(() => {}, 5000);
+    }, 500);
+  }
 };
 
-getSession();
+const activateMonitor = async () => {
+  try {
+    const { data } = await axios.post(
+      'http://localhost:3000/set_configuration.fcgi?session=' + token,
+      {
+        monitor: {
+          request_timeout: '5000',
+          hostname: 'https://ws.bios.inf.br',
+          port: '8083',
+        },
+      }
+    );
+
+    setTimeout(() => {
+      console.log('Iniciando redirecionamento do monitor de acessos...\n\n');
+      console.log('----------\n\n');
+      changeUrl();
+    }, 1000);
+  } catch (error) {
+    setTimeout(() => {
+      console.log(
+        'Não foi possivel ativar o monitor de acessos, tente novamente!\n\n'
+      );
+      setTimeout(() => {}, 5000);
+    }, 500);
+  }
+};
+
+const changeUrl = async () => {
+  try {
+    const { data } = await axios.post(
+      'http://localhost:3000/set_configuration.fcgi?session=' + token,
+      {
+        monitor: {
+          path: 'service',
+        },
+      }
+    );
+
+    setTimeout(() => {
+      console.log(
+        'Catraca configurada com sucesso, o programa irá fechar em alguns instantes!\n\n'
+      );
+      setTimeout(() => {}, 5000);
+    }, 1000);
+  } catch (error) {
+    setTimeout(() => {
+      console.log(
+        'Não foi possivel redirecionar o monitor, tente novamente!\n\n'
+      );
+      setTimeout(() => {}, 5000);
+    }, 500);
+  }
+};
+
+console.log('CONFIGURADOR AUTOMATICO CATRACA CONTROL ID - BIOS INFORMATICA\n');
+console.log(
+  '-------------------------------------------------------------\n\n'
+);
+setTimeout(() => {
+  getSession();
+}, 1000);
