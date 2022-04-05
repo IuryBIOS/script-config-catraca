@@ -1,0 +1,24 @@
+{
+  "name": "script-config-catraca-remote",
+  "version": "1.0.0",
+  "description": "",
+  "main": "example.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IuryBIOS/script-config-catraca.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IuryBIOS/script-config-catraca/issues"
+  },
+  "homepage": "https://github.com/IuryBIOS/script-config-catraca#readme",
+  "dependencies": {
+    "axios": "^0.26.1"
+  }
+}
