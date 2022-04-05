@@ -1,25 +1,41 @@
 const axios = require('axios');
 
 let token = '';
+const env = 'prod';
+const url = env === 'dev' ? 'http://localhost:3000' : 'http://192.168.0.129';
+
 const getSession = async () => {
-  console.log('Iniciando configurações necessarias, aguarde...\n\n');
-  console.log('----------\n\n');
+  console.log(
+    '          Iniciando configurações necessarias, aguarde...          \n\n'
+  );
+  console.log(
+    '                            -----------                            \n\n'
+  );
 
   try {
-    const { data } = await axios.post('http://localhost:3000/login.fcgi', {
+    const { data } = await axios.post(`${url}/login.fcgi`, {
       login: 'admin',
       password: 'admin',
     });
 
     token = data.session;
     setTimeout(() => {
-      console.log('Iniciando ativação do monitor de acessos...\n\n');
-      console.log('----------\n\n');
+      console.log(
+        '            Iniciando ativação do monitor de acessos...            \n\n'
+      );
+      console.log(
+        '                            -----------                            \n\n'
+      );
       activateMonitor();
     }, 1000);
   } catch (error) {
     setTimeout(() => {
-      console.log('Falha na configuração da catraca, tente novamente!\n\n');
+      console.log(
+        '   Falha na conexão com a catraca, certifique-se de estar em um    \n'
+      );
+      console.log(
+        'computador conectado na mesma rede que a catraca e tente novamente!\n\n'
+      );
       setTimeout(() => {}, 5000);
     }, 500);
   }
@@ -27,26 +43,27 @@ const getSession = async () => {
 
 const activateMonitor = async () => {
   try {
-    const { data } = await axios.post(
-      'http://localhost:3000/set_configuration.fcgi?session=' + token,
-      {
-        monitor: {
-          request_timeout: '5000',
-          hostname: 'https://ws.bios.inf.br',
-          port: '8083',
-        },
-      }
-    );
+    await axios.post(`${url}/set_configuration.fcgi?session=${token}`, {
+      monitor: {
+        request_timeout: '5000',
+        hostname: 'https://ws.bios.inf.br',
+        port: '8083',
+      },
+    });
 
     setTimeout(() => {
-      console.log('Iniciando redirecionamento do monitor de acessos...\n\n');
-      console.log('----------\n\n');
+      console.log(
+        '        Iniciando redirecionamento do monitor de acessos...        \n\n'
+      );
+      console.log(
+        '                            -----------                            \n\n'
+      );
       changeUrl();
     }, 1000);
   } catch (error) {
     setTimeout(() => {
       console.log(
-        'Não foi possivel ativar o monitor de acessos, tente novamente!\n\n'
+        '   Não foi possivel ativar o monitor de acessos, tente novamente!  \n\n'
       );
       setTimeout(() => {}, 5000);
     }, 500);
@@ -55,34 +72,34 @@ const activateMonitor = async () => {
 
 const changeUrl = async () => {
   try {
-    const { data } = await axios.post(
-      'http://localhost:3000/set_configuration.fcgi?session=' + token,
-      {
-        monitor: {
-          path: 'service',
-        },
-      }
-    );
+    await axios.post(`${url}/set_configuration.fcgi?session=${token}`, {
+      monitor: {
+        path: 'service',
+      },
+    });
 
     setTimeout(() => {
       console.log(
-        'Catraca configurada com sucesso, o programa irá fechar em alguns instantes!\n\n'
+        ' Catraca configurada com sucesso, o programa irá encerrar sozinho \n\n'
       );
       setTimeout(() => {}, 5000);
     }, 1000);
   } catch (error) {
     setTimeout(() => {
       console.log(
-        'Não foi possivel redirecionar o monitor, tente novamente!\n\n'
+        '     Não foi possivel redirecionar o monitor, tente novamente!     \n\n'
       );
       setTimeout(() => {}, 5000);
     }, 500);
   }
 };
 
-console.log('CONFIGURADOR AUTOMATICO CATRACA CONTROL ID - BIOS INFORMATICA\n');
+console.log('\n\n');
 console.log(
-  '-------------------------------------------------------------\n\n'
+  '   CONFIGURADOR AUTOMATICO CATRACA CONTROL ID - BIOS INFORMATICA   \n'
+);
+console.log(
+  '-------------------------------------------------------------------\n\n'
 );
 setTimeout(() => {
   getSession();
