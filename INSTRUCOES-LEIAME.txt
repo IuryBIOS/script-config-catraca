@@ -1,4 +1,4 @@
-﻿                INSTRUÇÕES PARA USO DO PROGRAMA DE CONFIGURAÇÃO AUTOMATICA DA CATRACA                 
+                INSTRUÇÕES PARA USO DO PROGRAMA DE CONFIGURAÇÃO AUTOMATICA DA CATRACA                 
 
 -----------------------------------------------------------------------------------------------------
 
@@ -34,8 +34,7 @@ Para confirmar se node.js está instalado ou instalar, basta seguir os passos do
 
 4. A mensagem "CONFIGURADOR AUTOMATICO CATRACA CONTROL ID - BIOS INFORMATICA" deverá aparecer,
 
-caso a mensagem não apareça, clique no arquivo INSTALAR e tente abrir o arquivo
-INICIAR novamente.
+caso a mensagem não apareça, clique no arquivo INSTALAR e tente abrir o arquivo INICIAR novamente.
 
 
 
