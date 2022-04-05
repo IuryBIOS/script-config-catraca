@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 let token = '';
 const env = 'prod';
@@ -46,8 +46,8 @@ const activateMonitor = async () => {
     await axios.post(`${url}/set_configuration.fcgi?session=${token}`, {
       monitor: {
         request_timeout: '5000',
-        hostname: 'https://ws.bios.inf.br',
-        port: '8083',
+        hostname: 'ws.bios.inf.br',
+        port: '80',
       },
     });
 
